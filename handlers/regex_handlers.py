@@ -35,6 +35,7 @@ async def command_search_email(message: types.Message, state: FSMContext):
 
 @router_regex.message(Command('find_phone_number'), StateFilter(default_state))
 async def command_search_phone_number(message: types.Message, state: FSMContext):
+    await message.answer(TEXT_BOT.RegexMessage['command_phone'])
     await state.set_state(PhoneState.InputPhone)
 
 
