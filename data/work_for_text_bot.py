@@ -19,6 +19,7 @@ def read_file_json(file_name):
 class DataText:
     MenuCommands: dict
     SSHCommands: dict
+    SSHMessage: dict
     GeneralCommands: dict
     BDMessage: dict
     KeyboardsText: dict
@@ -28,5 +29,6 @@ class DataText:
 
 
 tmp = read_file_json('data/text_aiogram_bot.json')
-TEXT_BOT = DataText(tmp['commands_menu'], tmp['commands_ssh'], tmp['general_commands'], tmp['interaction_bd_message'],
-                    tmp['keyboards_text'], tmp['message_monitoring'], tmp['regex_message'], tmp['settings_message'])
+TEXT_BOT = DataText(tmp['commands_menu'], tmp['commands_ssh'], tmp['message_ssh'], tmp['general_commands'],
+                    tmp['interaction_bd_message'], tmp['keyboards_text'], tmp['message_monitoring'],
+                    tmp['regex_message'], tmp['settings_message'])

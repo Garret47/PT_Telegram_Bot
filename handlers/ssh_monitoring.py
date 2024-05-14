@@ -21,17 +21,23 @@ async def telegram_ssh_linux(message: types.Message, answer: tuple, command: Com
 async def output_monitoring_easy(message: types.Message, command: CommandObject):
     connect = await SSHConnectionFactory.get_connection(host=config.HOST_IP_SSH, user=config.USERNAME_SSH,
                                                         port=config.PORT_SSH, password=config.PASSWORD_SSH)
-    answer = await connect.send_command_to_host(TEXT_BOT.SSHCommands[command.command], message.from_user.id)
-    await telegram_ssh_linux(message, answer, command)
+    if connect:
+        answer = await connect.send_command_to_host(TEXT_BOT.SSHCommands[command.command], message.from_user.id)
+        await telegram_ssh_linux(message, answer, command)
+    else:
+        await message.answer(TEXT_BOT.SSHMessage['failed'])
 
 
 @router_ssh_monitoring.message(Command('get_apt_list'), StateFilter(default_state))
 async def output_monitoring_difficult(message: types.Message, command: CommandObject):
     connect = await SSHConnectionFactory.get_connection(host=config.HOST_IP_SSH, user=config.USERNAME_SSH,
                                                         port=config.PORT_SSH, password=config.PASSWORD_SSH)
-    if command.args:
-        args = re.sub(r'[^\w -]', '', command.args)
-        answer = await connect.send_command_to_host(f'dpkg -s {args}', message.from_user.id)
+    if connect:
+        if command.args:
+            args = re.sub(r'[^\w -]', '', command.args)
+            answer = await connect.send_command_to_host(f'dpkg -s {args}', message.from_user.id)
+        else:
+            answer = await connect.send_command_to_host('apt list --installed', message.from_user.id)
+        await telegram_ssh_linux(message, answer, command)
     else:
-        answer = await connect.send_command_to_host('apt list --installed', message.from_user.id)
-    await telegram_ssh_linux(message, answer, command)
+        await message.answer(TEXT_BOT.SSHMessage['failed'])

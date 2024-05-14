@@ -18,12 +18,12 @@ class SSHConnection:
         try:
             self.conn = await asyncssh.connect(host=host, port=port,
                                                username=username, password=password.get_secret_value(),
-                                               encoding='utf-8')
+                                               encoding='utf-8', known_hosts=None)
             self.writer, self.reader, self.stderr = await self.conn.open_session()
             await self.writer.drain()
             await self.create_outputs()
             return self
-        except [OSError, asyncssh.Error] as e:
+        except Exception as e:
             loger.error(f'Not connect to host {host}', exc_info=e)
             return None
 
