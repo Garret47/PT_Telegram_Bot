@@ -44,7 +44,7 @@ class SSHConnection:
                 return out
 
     async def create_outputs(self, user_id: int = None):
-        out = await asyncio.gather(self.stream_read(self.reader, 0.2), self.stream_read(self.stderr, 0.2))
+        out = await asyncio.gather(self.stream_read(self.reader, 0.4), self.stream_read(self.stderr, 0.2))
         if out == ['', ''] or not user_id:
             return
         if out[-1]:
