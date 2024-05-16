@@ -16,14 +16,14 @@ class SSHConnection:
 
     async def connect_ssh(self, host: str, port: int, username: str, password: SecretStr):
         try:
-            self.conn = await asyncssh.connect(host=host, port=port,
-                                               username=username, password=password.get_secret_value(),
-                                               encoding='utf-8', known_hosts=None)
+            self.conn = await asyncio.wait_for(asyncssh.connect(host=host, port=port, username=username,
+                                                                password=password.get_secret_value(),
+                                                                encoding='utf-8', known_hosts=None), timeout=3)
             self.writer, self.reader, self.stderr = await self.conn.open_session()
             await self.writer.drain()
             await self.create_outputs()
             return self
-        except [OSError, asyncssh.Error] as e:
+        except Exception as e:
             loger.error(f'Not connect to host {host}', exc_info=e)
             return None
 
@@ -44,7 +44,7 @@ class SSHConnection:
                 return out
 
     async def create_outputs(self, user_id: int = None):
-        out = await asyncio.gather(self.stream_read(self.reader, 0.2), self.stream_read(self.stderr, 0.2))
+        out = await asyncio.gather(self.stream_read(self.reader, 0.4), self.stream_read(self.stderr, 0.2))
         if out == ['', ''] or not user_id:
             return
         if out[-1]:

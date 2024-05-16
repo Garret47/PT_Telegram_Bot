@@ -3,7 +3,7 @@ import re
 from aiogram import Router, types
 from aiogram.filters import Command, StateFilter, CommandObject
 from aiogram.fsm.state import default_state
-from data import TEXT_BOT
+from data import TEXT_BOT, PATH_LOG
 from keyboards import kb_inline_settings_user
 from settings import config
 from utils import format_answer_user, answer_users
@@ -30,14 +30,14 @@ async def command_settings(message: types.Message):
 
 @router_general_commands.message(Command('get_repl_logs'), StateFilter(default_state))
 async def command_logs(message: types.Message, command: CommandObject):
-    path = './logs/logs/postgresql.log'
+    path = PATH_LOG
     if message.from_user.id in config.ADMINS:
         if command.args:
             number = int(re.sub(r'[^\d]', '', command.args))
-            output = subprocess.run(["tail", f"-{number}", path],
+            output = subprocess.run(["tail", f"-{number}", PATH_LOG],
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         else:
-            output = subprocess.run(["cat", path],
+            output = subprocess.run(["cat", PATH_LOG],
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output = output.stdout + output.stderr
         await answer_users(message, await format_answer_user(output, message.from_user.id), command)

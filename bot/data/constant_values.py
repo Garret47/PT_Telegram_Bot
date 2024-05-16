@@ -1,3 +1,4 @@
 ANSWER_MESSAGE_AND_FILE = 3
 ANSWER_MESSAGE = 2
 ANSWER_FILE = 1
+PATH_LOG = './log/postgresql.log'

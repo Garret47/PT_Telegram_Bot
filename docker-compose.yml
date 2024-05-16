@@ -9,7 +9,7 @@ services:
       - .env
     restart: unless-stopped
     volumes:
-      - postgres:/app/logs
+      - 'logs:/app/log'
     networks:
       - internet
       - localnet
@@ -30,10 +30,12 @@ services:
     volumes:
       - 'postgres:/var/lib/postgressql/data'
       - './db/init.sh:/docker-entrypoint-initdb.d/init.sh'
+      - 'logs:/log/replication'
     restart: unless-stopped
     command: >
-       postgres -c "archive_mode=on" -c "archive_command=cp %p /var/lib/postgresql/WAL/archive/%f" -c "max_wal_senders=10" -c "wal_level=replica" -c "wal_log_hints=on"
-       -c "logging_collector=on" -c "log_directory=/var/lib/postgressql/data/logs" -c "log_filename=postgresql.log"
+       postgres -c "archive_mode=on" -c "archive_command=cp %p /var/lib/postgresql/WAL/archive/%f" 
+       -c "max_wal_senders=10" -c "wal_level=replica" -c "wal_log_hints=on"
+       -c "logging_collector=on" -c "log_directory=/log/replication" -c "log_filename=postgresql.log"
     networks:
       - localnet
 
@@ -56,6 +58,7 @@ services:
 
 volumes:
   postgres:
+  logs:
 networks:
   internet:
     name: internet

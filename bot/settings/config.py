@@ -8,14 +8,14 @@ class Settings(BaseSettings):
     USERNAME_SSH: str
     PASSWORD_SSH: SecretStr
     PORT_SSH: int
-    HOST_IP_BD: str
+    HOST_IP_BD: str = 'db_image'
     USERNAME_BD: str
     PASSWORD_BD: SecretStr
     PORT_BD: str
     DATABASES: str
     ADMINS: list[int]
 
-#    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf8')
+    # model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf8')
 
 
 config = Settings()

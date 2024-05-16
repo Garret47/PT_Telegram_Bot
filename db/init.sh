@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#mkdir -p /var/lib/postgresql/WAL/archive
-mkdir -p /var/lib/postgressql/data/logs
-
 psql -U "$POSTGRES_USER" -d $POSTGRES_DB -c \
 "
 CREATE USER $USERNAME_BD_REPL REPLICATION LOGIN ENCRYPTED PASSWORD '$PASSWORD_REPL';
